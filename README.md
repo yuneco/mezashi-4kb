@@ -8,7 +8,7 @@
 
 Normal 4BK game play page. Source map enabled for your code reading.
 
-- [Pxtremely Packed version](https://yuneco.github.io/mezashi-4kb/packed.html)
+- [Extremely Packed version](https://yuneco.github.io/mezashi-4kb/packed.html)
 
 Handy minified version. Entire code including the page html packed into 4096 bytes.
 
