@@ -4,7 +4,6 @@ export const STYLE = 'style'
 export const FILTER = 'filter'
 export const FOREACH = 'forEach'
 export const POSITION = 'position'
-export const ADD_EVENT_LISTENER = 'addEventListener'
 export const BACKGROUND = 'background'
 export const INNERHTML = 'innerHTML'
 export const STROKE = 'stroke'
@@ -17,6 +16,14 @@ export const createElement = (k: string) => doc.createElement(k)
 export const appendChild = (el: HTMLElement) => body.appendChild(el)
 export const random = (max = 1) => MATH.random() * max
 export const timeout = setTimeout
+export const handleClick = (el: HTMLElement, func:() => void) => {
+  el.addEventListener('pointerdown', e => {
+    e.cancelBubble = true
+    //e.preventDefault()
+    func()
+  })
+}
+
 
 export const COLOR_666 = '#666'
 export const COLOR_FFF = '#fff'

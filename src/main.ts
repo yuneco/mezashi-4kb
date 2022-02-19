@@ -8,7 +8,6 @@ import {
   FILTER,
   FOREACH,
   body,
-  ADD_EVENT_LISTENER,
   random,
   MATH,
   timeout,
@@ -17,7 +16,8 @@ import {
   COLOR_666,
   COLOR_TRANSPARENT,
   INNERHTML,
-  N100
+  N100,
+  handleClick
 } from './common'
 import { catSvg, mzsSvg, tamaSvg } from './graphics'
 import { playGameOverSnd, playNote } from './sound'
@@ -100,13 +100,13 @@ const setAbsPosition = (style: CSSStyleDeclaration, w: number, h: number, x = 0,
 const createButton = (onclick: () => void) => {
   const button = createElement('button')
   const st = button[STYLE]
-  setAbsPosition(st, STAGE_WIDTH, 40, 0, 610)
+  setAbsPosition(st, STAGE_WIDTH, 60, 0, 610)
   setNoUserSelect(st)
   setDefaultBoarder(st)
+  st.color = COLOR_666
   st[BACKGROUND] = COLOR_FFF
-  button[ADD_EVENT_LISTENER]('click', (e) => {
-    // ボタンはbody（ステージ）内に配置しているため、バブリングを止めないとステージのクリックも発動してしまう
-    e.cancelBubble = true
+  st.fontSize = 24 + PX
+  handleClick(button,() => {
     onclick()
     st[BACKGROUND] = COLOR_666
     timeout(() => (st[BACKGROUND] = COLOR_FFF), N100)
@@ -328,8 +328,9 @@ bodyStyle.fontFamily = 'arial'
 bodyStyle.width = STAGE_WIDTH + PX
 bodyStyle.height = STAGE_HEIGHT + PX
 bodyStyle[POSITION] = 'relative'
+bodyStyle.touchAction = 'none'
 // ステージクリックでメザシを発射
-body[ADD_EVENT_LISTENER]('click', addMzs)
+handleClick(body, addMzs)
 // 画面下のメインボタンを生成： ゲーム中 → ジャンプ / ゲーム前&ゲームオーバー → ゲーム開始
 mainButton = createButton(() => (isPlaying ? tamaJump : startGame)())
 // スコアと残弾数の表示テキストを生成
