@@ -1,4 +1,3 @@
-//import './createSvg'
 import {
   createElement,
   STYLE,
@@ -58,26 +57,38 @@ let stateText: HTMLElement
 let titleText: HTMLElement
 
 // 描画状態
+/** 前回のｔｉｃｋを実行した時刻(ms) */
 let lastTick = 0
+/** 現在のフレームのdelay: 60FPS=1としたフレームレートの逆数（30FPSなら2） */
 let frameDelay = 1
+/** 現在のフレーム番号: delayを含むため、この値は整数にはなりません */
 let frameCount = 0
+/**
+ * KEY_FRAME_INTERVALを1単位として、直近のtickのキーフレーム番号
+ * tickでキーフレーム単位の処理を行うために使用 */
 let lastKeyFrame = -1
 
 // ゲーム状態
+/** ゲームはプレー中か？ */
 let isPlaying = false
+/** スコア */
 let score = 0
+/** 猫の出現率: 時間と共に上昇し、猫が追加されると0に戻る */
 let catAppearRate = 1
+/** 残弾数: 0になると一定時間発射できなくなる */
 let bulletLeft = 6
 
+// キャラクターの定義
 /** 全てのキャラクター */
 let allCharas: Chara[] = []
 /** キャラ： 猫配列 */
 let cats: Chara[] = []
 /** キャラ： メザシ配列 */
 let mzses: Chara[] = []
+/** キャラ： たまさん */
+let tama: Chara
 
 // スタイル操作のユーティリティ
-
 const setDefaultBoarder = (style: CSSStyleDeclaration) => {
   style.border = 'solid 2px' + COLOR_666
 }
@@ -101,7 +112,7 @@ const createButton = (onclick: () => void) => {
   const st = button[STYLE]
   // ボタンの背景色を切り替える関数
   const setBgColor = (isInvert?: boolean) => (st.background = isInvert ? COLOR_666 : COLOR_FFF)
-  setAbsPosition(st, STAGE_WIDTH, 60, 0, 610)
+  setAbsPosition(st, STAGE_WIDTH, 60, 0, STAGE_HEIGHT + 10)
   setNoUserSelect(st)
   setDefaultBoarder(st)
   st.color = COLOR_666
@@ -109,6 +120,7 @@ const createButton = (onclick: () => void) => {
   setBgColor()
   handleClick(button, () => {
     onclick()
+    playNotes([392])
     setBgColor(true)
     timeout(setBgColor, N100)
   })
@@ -147,10 +159,6 @@ const createChara = (w: number, h: number, x = 0, y = 0): Chara => {
   return chara
 }
 
-/** キャラ： たまさん */
-const tama = createChara(80, N100)
-tama.e[INNERHTML] = tamaSvg
-
 /**
  * 存在しなくなったキャラをDOMから削除する
  * @param alives 生きてる全てのキャラ = ここに含まれないものは削除
@@ -179,7 +187,6 @@ const updatePos = (chara: Chara) => {
 const tamaJump = () => {
   if (!tama.y) {
     tama.v = 25
-    playNotes([392])
   }
 }
 
@@ -192,6 +199,7 @@ const addCat = () => {
     cat.a = 0
   }
   cat.e[INNERHTML] = catSvg
+  // スコアに合わせて移動速度を上げていく
   cat.m = -4 - score * CAT_SPEED_UP
   cats.push(cat)
 }
@@ -222,20 +230,25 @@ const addMzs = () => {
   playNotes([784])
 }
 
+/** スコアと弾数の表示を更新します */
+const updateStateText = () => {
+  stateText[INNERHTML] = `🐱${score} / ` + ('🐟'.repeat(bulletLeft) || 'RELOADING')
+}
+
 /** ステージ外に出たキャラを削除 */
-const cleanupStageoutCharactors = (charas: Chara[]) =>
+const filteroutStageoutCharactors = (charas: Chara[]) =>
   charas[FILTER]((chara: Chara) => chara.x > 0 && chara.x < STAGE_WIDTH)
 
 /** 2つのレンジが重なるか判定するユーティリティ */
-const isIn = (x1: number, w1: number, x2: number, w2: number) =>
+const isOverwraped = (x1: number, w1: number, x2: number, w2: number) =>
   Math.abs((x1 - x2) * 2 + w1 - w2) < w1 + w2
 
 /** 2つのキャラの衝突が衝突するか？ */
 const intersected = (c1: Chara, c2: Chara) =>
-  isIn(c1.x, c1.w, c2.x, c2.w) && isIn(c1.y, c1.h, c2.y, c2.h)
+  isOverwraped(c1.x, c1.w, c2.x, c2.w) && isOverwraped(c1.y, c1.h, c2.y, c2.h)
 
 /** 衝突したキャラを削除 */
-const cleanupHitCharactors = (charas: Chara[], bullets: Chara[]) => {
+const filteroutHitCharactors = (charas: Chara[], bullets: Chara[]) => {
   let hits: Chara[] = []
   bullets[FOREACH]((bullet) => {
     const hitCharas = charas[FILTER]((t) => intersected(t, bullet))
@@ -275,11 +288,11 @@ const tick = (time: number) => {
     // キャラの位置を更新
     ;[tama, ...cats, ...mzses][FOREACH](updatePos)
     // ステージ外に出たキャラを除去
-    cats = cleanupStageoutCharactors(cats)
-    mzses = cleanupStageoutCharactors(mzses)
+    cats = filteroutStageoutCharactors(cats)
+    mzses = filteroutStageoutCharactors(mzses)
     // 衝突判定
     const catCount = cats.length
-    ;[cats, mzses] = cleanupHitCharactors(cats, mzses)
+    ;[cats, mzses] = filteroutHitCharactors(cats, mzses)
     // スコア加算
     const hitCount = catCount - cats.length
     if (hitCount) {
@@ -296,17 +309,13 @@ const tick = (time: number) => {
   requestAnimationFrame(tick)
 }
 
-/** スコアと弾数の表示を更新します */
-const updateStateText = () => {
-  stateText[INNERHTML] = `🐱${score} / ` + ('🐟'.repeat(bulletLeft) || 'RELOADING')
-}
-
 /** ゲームを開始します */
 const startGame = () => {
   // 全てのキャラを削除
   cats = []
   mzses = []
   removeInvalidCharas([tama])
+  // ゲーム状態をリセット
   score = 0
   bulletLeft = 6
   isPlaying = true
@@ -328,29 +337,36 @@ const endGame = (isOver?: boolean) => {
 }
 
 // 初期化処理
-const bodyStyle = body[STYLE]
-setDefaultBoarder(bodyStyle)
-// Safariはデフォルトのフォントがセリフ系なのでサンセリフ系にする
-// sans-serifは長いので、標準で使用できて名前の短いarialを採用
-bodyStyle.fontFamily = 'arial'
-bodyStyle.width = STAGE_WIDTH + PX
-bodyStyle.height = STAGE_HEIGHT + PX
-bodyStyle.position = 'relative'
-bodyStyle.touchAction = 'none'
-// ステージクリックでメザシを発射
-handleClick(body, addMzs)
-// 画面下のメインボタンを生成： ゲーム中 → ジャンプ / ゲーム前&ゲームオーバー → ゲーム開始
-mainButton = createButton(() => (isPlaying ? tamaJump : startGame)())
-// スコアと残弾数の表示テキストを生成
-stateText = createText()
-const stateStyle = stateText[STYLE]
-// textShadowを使って絵文字をシルエットで表示する
-stateStyle.color = COLOR_TRANSPARENT
-stateStyle.textShadow = '0 0 0 ' + COLOR_666
-// タイトルテキストを生成
-titleText = createText(36, 310, 'center')
+const init = () => {
+  const bodyStyle = body[STYLE]
+  setDefaultBoarder(bodyStyle)
+  // Safariはデフォルトのフォントがセリフ系なのでサンセリフ系にする
+  // sans-serifは長いので、標準で使用できて名前の短いarialを採用
+  bodyStyle.fontFamily = 'arial'
+  bodyStyle.width = STAGE_WIDTH + PX
+  bodyStyle.height = STAGE_HEIGHT + PX
+  bodyStyle.position = 'relative'
+  bodyStyle.touchAction = 'none'
+  // ステージクリックでメザシを発射
+  handleClick(body, addMzs)
+  // 画面下のメインボタンを生成： ゲーム中 → ジャンプ / ゲーム前&ゲームオーバー → ゲーム開始
+  mainButton = createButton(() => (isPlaying ? tamaJump : startGame)())
+  // スコアと残弾数の表示テキストを生成
+  stateText = createText()
+  const stateStyle = stateText[STYLE]
+  // textShadowを使って絵文字をシルエットで表示する
+  stateStyle.color = COLOR_TRANSPARENT
+  stateStyle.textShadow = '0 0 0 ' + COLOR_666
+  // タイトルテキストを生成
+  titleText = createText(36, 310, 'center')
+  // たまさんを生成
+  tama = createChara(80, N100)
+  tama.e[INNERHTML] = tamaSvg
+}
 
-// リセット
+// アプリを初期化
+init()
+// ゲームをリセット
 endGame()
 // フレームアニメーションを開始
 tick(0)
