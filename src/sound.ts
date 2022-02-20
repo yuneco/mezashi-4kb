@@ -1,8 +1,15 @@
-import { FOREACH, N100, timeout } from "./common";
+import { N100, timeout } from "./common";
 
 let ctx: AudioContext
 
-export const playNote = (hz: number, durMs = N100, volume = 0.3) => {
+/**
+ * 指定した音を連続して再生します
+ * @param param0 再生する音の周波数配列。各要素は>0の数値で指定。
+ * @param durMs 各音の再生時間(ms)
+ * @param volume 再生音量
+ */
+export const playNotes = ([hz, ...rest]: number[], durMs = N100, volume = 0.3) => {
+  if (!hz) return
   ctx ||= new AudioContext();
   let oscillator = ctx.createOscillator();
   let gainNode = ctx.createGain();
@@ -19,11 +26,6 @@ export const playNote = (hz: number, durMs = N100, volume = 0.3) => {
     gain.value = 0;
     oscillator.disconnect();
     gainNode.disconnect();
+    playNotes(rest) // 残りの音を再生
   }, durMs);
-};
-
-export const playGameOverSnd = () => {
-  [523, 466, 440, 392, 349][FOREACH]((hz, index) => {
-    timeout(() => playNote(hz), N100 * index);
-  });
 };

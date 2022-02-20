@@ -17,7 +17,7 @@ import {
   handleClick
 } from './common'
 import { catSvg, mzsSvg, tamaSvg } from './graphics'
-import { playGameOverSnd, playNote } from './sound'
+import { playNotes } from './sound'
 
 /** 全てのキャラクター（ステージ上の要素）の型 */
 type Chara = {
@@ -49,6 +49,8 @@ const CAT_APPEAR_RATE_INCREASE = 0.003
 const CAT_JUMP_RATE = 0.01
 /** 得点ごとに猫がスピードアップする量 */
 const CAT_SPEED_UP = 0.04
+/** 飛ぶ猫の出現率 */
+const CAT_FLY_RATE = 0.2
 
 // 画面要素
 let mainButton: HTMLElement
@@ -174,7 +176,7 @@ const updatePos = (chara: Chara) => {
 const tamaJump = () => {
   if (!tama.y) {
     tama.v = 25
-    playNote(392)
+    playNotes([392])
   }
 }
 
@@ -182,6 +184,9 @@ const tamaJump = () => {
 const addCat = () => {
   const size = 50
   const cat = createChara(size, size, STAGE_WIDTH - size, random(300))
+  if (random() < CAT_FLY_RATE) {
+    cat.a = 0
+  }
   cat.e[INNERHTML] = catSvg
   cat.m = -4 - score * CAT_SPEED_UP
   cats.push(cat)
@@ -210,7 +215,7 @@ const addMzs = () => {
       updateStateText()
     }, 2000)
   }
-  playNote(784)
+  playNotes([784])
 }
 
 /** ステージ外に出たキャラを削除 */
@@ -276,7 +281,7 @@ const tick = (time: number) => {
     if (hitCount) {
       score += hitCount
       updateStateText()
-      playNote(523)
+      playNotes([523])
     }
     // ゲームオーバー判定
     if (cats.some((cat) => intersected(cat, tama))) endGame(true)
@@ -315,7 +320,7 @@ const endGame = (isOver?: boolean) => {
   tama.x = (STAGE_WIDTH - tama.w) / 2
   tama.y = STAGE_HEIGHT / 2
   updatePos(tama)
-  if (isOver) playGameOverSnd()
+  if (isOver) playNotes([523, 466, 440, 392, 349])
 }
 
 // 初期化処理
