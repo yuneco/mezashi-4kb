@@ -1,6 +1,9 @@
 import { N100, timeout } from "./common";
 
-let ctx: AudioContext
+const ctx: AudioContext = new AudioContext()
+const gainNode: GainNode = ctx.createGain()
+const gain = gainNode.gain
+gainNode.connect(ctx.destination);
 
 /**
  * 指定した音を連続して再生します
@@ -8,24 +11,18 @@ let ctx: AudioContext
  * @param durMs 各音の再生時間(ms)
  * @param volume 再生音量
  */
-export const playNotes = ([hz, ...rest]: number[], durMs = N100, volume = 0.3) => {
+export const playNotes = ([hz, ...rest]: number[]) => {
   if (!hz) return
-  ctx ||= new AudioContext();
-  let oscillator = ctx.createOscillator();
-  let gainNode = ctx.createGain();
-  let gain = gainNode.gain
+  const oscillator = ctx.createOscillator();
 
   oscillator.connect(gainNode);
-  gainNode.connect(ctx.destination);
   oscillator.frequency.setValueAtTime(hz, ctx.currentTime);
-  gain.value = volume;
-  gain.linearRampToValueAtTime(0, ctx.currentTime + durMs / 1000);
+  gain.value = 0.3;
+  gain.linearRampToValueAtTime(0, ctx.currentTime + 0.09);
 
   oscillator.start();
   timeout(() => {
-    gain.value = 0;
-    oscillator.disconnect();
-    gainNode.disconnect();
+    oscillator.stop()
     playNotes(rest) // 残りの音を再生
-  }, durMs);
+  }, N100);
 };
