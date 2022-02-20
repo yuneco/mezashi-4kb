@@ -133,6 +133,7 @@ const createChara = (w: number, h: number, x = 0, y = 0): Chara => {
   const box = createElement('i')
   const style = box[STYLE]
   setAbsPosition(style, w, h)
+  style.transformOrigin = 'bottom'
   const chara = {
     e: appendChild(box),
     x,
@@ -169,7 +170,9 @@ const updatePos = (chara: Chara) => {
     chara.v = chara.y = 0
   }
   chara.x += (chara.m ?? 0) * frameDelay
-  chara.e[STYLE].transform = `translate(${chara.x}px, ${STAGE_HEIGHT - chara.y - chara.h}px)`
+  chara.e[STYLE].transform = `translate(${chara.x}px, ${
+    STAGE_HEIGHT - chara.y - chara.h
+  }px) scaleY(${Math.sin(frameCount / 7) / 20 + 1})`
 }
 
 /** たまさんジャンプ */
@@ -185,6 +188,7 @@ const addCat = () => {
   const size = 50
   const cat = createChara(size, size, STAGE_WIDTH - size, random(300))
   if (random() < CAT_FLY_RATE) {
+    // 空飛ぶ猫（=重力0）
     cat.a = 0
   }
   cat.e[INNERHTML] = catSvg
