@@ -3,15 +3,12 @@ import {
   createElement,
   STYLE,
   PX,
-  POSITION,
   appendChild,
   FILTER,
   FOREACH,
   body,
   random,
-  MATH,
   timeout,
-  BACKGROUND,
   COLOR_FFF,
   COLOR_666,
   COLOR_TRANSPARENT,
@@ -89,7 +86,7 @@ const setText = (el: HTMLElement, text: string) => {
   el[INNERHTML] = text
 }
 const setAbsPosition = (style: CSSStyleDeclaration, w: number, h: number, x = 0, y = 0) => {
-  style[POSITION] = 'absolute'
+  style.position = 'absolute'
   style.top = y + PX
   style.left = x + PX
   style.width = w + PX
@@ -100,16 +97,18 @@ const setAbsPosition = (style: CSSStyleDeclaration, w: number, h: number, x = 0,
 const createButton = (onclick: () => void) => {
   const button = createElement('button')
   const st = button[STYLE]
+  // ボタンの背景色を切り替える関数
+  const setBgColor = (isInvert?: boolean) => (st.background = isInvert ? COLOR_666 : COLOR_FFF)
   setAbsPosition(st, STAGE_WIDTH, 60, 0, 610)
   setNoUserSelect(st)
   setDefaultBoarder(st)
   st.color = COLOR_666
-  st[BACKGROUND] = COLOR_FFF
   st.fontSize = 24 + PX
-  handleClick(button,() => {
+  setBgColor()
+  handleClick(button, () => {
     onclick()
-    st[BACKGROUND] = COLOR_666
-    timeout(() => (st[BACKGROUND] = COLOR_FFF), N100)
+    setBgColor(true)
+    timeout(setBgColor, N100)
   })
   return appendChild(button)
 }
@@ -220,7 +219,7 @@ const cleanupStageoutCharactors = (charas: Chara[]) =>
 
 /** 2つのレンジが重なるか判定するユーティリティ */
 const isIn = (x1: number, w1: number, x2: number, w2: number) =>
-  MATH.abs((x1 - x2) * 2 + w1 - w2) < w1 + w2
+  Math.abs((x1 - x2) * 2 + w1 - w2) < w1 + w2
 
 /** 2つのキャラの衝突が衝突するか？ */
 const intersected = (c1: Chara, c2: Chara) =>
@@ -327,7 +326,7 @@ setDefaultBoarder(bodyStyle)
 bodyStyle.fontFamily = 'arial'
 bodyStyle.width = STAGE_WIDTH + PX
 bodyStyle.height = STAGE_HEIGHT + PX
-bodyStyle[POSITION] = 'relative'
+bodyStyle.position = 'relative'
 bodyStyle.touchAction = 'none'
 // ステージクリックでメザシを発射
 handleClick(body, addMzs)
