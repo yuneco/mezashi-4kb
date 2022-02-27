@@ -161,7 +161,7 @@ const createChara = (svg: string, w: number, h: number, x = 0, y = 0): Chara => 
  */
 const removeInvalidCharas = (alives: Chara[]) => {
   allCharas[FILTER]((chara) => !alives.includes(chara))[FOREACH]((chara) =>
-    body.removeChild(chara.e)
+    chara.e.remove()
   )
   allCharas = alives
 }
