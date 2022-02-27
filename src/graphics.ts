@@ -37,12 +37,12 @@ export const tamaSvg = wrapSvgTag(
   ) +
     // line
     str2pathes(
-      'zqoJlpidqoapAYSeCZOblaabqQunjaeICsXEvsE=*xdkJmZmUnZGWAZWsCZWajpuPlA==*x/MJlZuPm4+U*wcIJm5Wcj5yPn5+nqauwEZmZlJSVlJkJjKptsFyf*r9EJkpiPno+fAbSGCZmTs5GcpQjI6LfpseIJkZGTjpaM*r98R4eGUlJSKjwmPko+nlqQLnY6ejADItRGVlZSUlJWUCZSUlJOUkwuUlZSVEgGbmAmTlI+VkZcAmsEImr2pw6bICY6VgZODjguaiJuICqrCpsgBtoUHlQGSkweVAZeKkpUBpLeXkQF/nAmZmJSdkZYBnYyboA==',
+      'zqoJlpidqoapAYSeCZOblaabqQunjaeICsXEvsE*xdkJmZmUnZGWAZWsCZWajpuPlA*x/MJlZuPm4+U*wcIJm5Wcj5yPn5+nqauwEZmZlJSVlJkJjKptsFyf*r9EJkpiPno+fAbSGCZmTs5GcpQjI6LfpseIJkZGTjpaM*r98R4eGUlJSKjwmPko+nlqQLnY6ejADItRGVlZSUlJWUCZSUlJOUkwuUlZSVEgGbmAmTlI+VkZcAmsEImr2pw6bICY6VgZODjguaiJuICqrCpsgBtoUHlQGSkweVAZeKkpUBpLeXkQF/nAmZmJSdkZYBnYyboA',
       2
     ) +
     // fill line
     str2pathes(
-      'xp8JkoeOh4ySjYqHioebCKasnrSjvQuioqefCsW7xrAJlpOYkJiLlpmYl5iVC5GMi4sS*psgJk5WJn5KjC5+Ln4kJkpSNk4uQEg==*0dIRlZWUlZSVk5WVlJSUk5US',
+      'xp8JkoeOh4ySjYqHioebCKasnrSjvQuioqefCsW7xrAJlpOYkJiLlpmYl5iVC5GMi4sS*psgJk5WJn5KjC5+Ln4kJkpSNk4uQEg*0dIRlZWUlZSVk5WVlJSUk5US',
       2,
       COLOR_666
     ),
@@ -57,7 +57,7 @@ export const catSvg = wrapSvgTag(
   // fill
   str2pathes(`5as${catBase}`, 0, '#998') +
     // line
-    str2pathes(`4Ko${catBase}*o7wJkpeLmYmTAaqKi5iclwGcl52VALa/A5yXALG+A5OYAZKPk5g=`),
+    str2pathes(`4Ko${catBase}*o7wJkpeLmYmTAaqKi5iclwGcl52VALa/A5yXALG+A5OYAZKPk5g`),
   N100,
   N100
 )
@@ -66,9 +66,9 @@ const mzsBase = 'JlJmIn3afiZR4knKPiZt8noOQjIiZh6WSoI2rjLaLopOyl7KdEw'
 
 export const mzsSvg = wrapSvgTag(
   // fill
-  str2pathes(`8ac${mzsBase}==`, 0, '#9bc') +
+  str2pathes(`8ac${mzsBase}`, 0, '#9bc') +
     // line
-    str2pathes(`76U${mzsBase}GFkpiYAZSQkJg=`),
+    str2pathes(`76U${mzsBase}GFkpiYAZSQkJg`),
   N100,
   40
 )
