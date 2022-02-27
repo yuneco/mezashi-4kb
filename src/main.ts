@@ -136,7 +136,7 @@ const createText = (size = 24, top = 0, align = '') => {
 }
 
 /** キャラクターを追加する */
-const createChara = (w: number, h: number, x = 0, y = 0): Chara => {
+const createChara = (svg: string, w: number, h: number, x = 0, y = 0): Chara => {
   const box = createElement('i')
   const style = box[STYLE]
   setAbsPosition(style, w, h)
@@ -150,6 +150,7 @@ const createChara = (w: number, h: number, x = 0, y = 0): Chara => {
     w,
     h
   }
+  box[INNERHTML]=svg
   allCharas.push(chara)
   return chara
 }
@@ -188,12 +189,11 @@ const tamaJump = () => {
 /** 猫をステージに追加 */
 const addCat = () => {
   const size = 50
-  const cat = createChara(size, size, STAGE_WIDTH - size, random(300))
+  const cat = createChara(catSvg, size, size, STAGE_WIDTH - size, random(300))
   if (random() < CAT_FLY_RATE) {
     // 空飛ぶ猫（=重力0）
     cat.a = 0
   }
-  cat.e[INNERHTML] = catSvg
   // スコアに合わせて移動速度を上げていく
   cat.m = -4 - score * CAT_SPEED_UP
   cats.push(cat)
@@ -209,8 +209,7 @@ const catJump = (cat: Chara) => {
 /** メザシをステージに追加 */
 const addMzs = () => {
   if (!isPlaying || !bulletLeft) return
-  const mzs = createChara(40, 10, 50, tama.y + 40)
-  mzs.e[INNERHTML] = mzsSvg
+  const mzs = createChara(mzsSvg, 40, 10, 50, tama.y + 40)
   mzs.m = 5
   mzs.a = 0
   mzses.push(mzs)
@@ -356,8 +355,7 @@ const init = () => {
   // タイトルテキストを生成
   titleText = createText(36, 310, 'center')
   // たまさんを生成
-  tama = createChara(80, N100)
-  tama.e[INNERHTML] = tamaSvg
+  tama = createChara(tamaSvg, 80, N100)
 }
 
 // アプリを初期化
