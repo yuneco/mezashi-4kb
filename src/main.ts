@@ -92,9 +92,6 @@ let tama: Chara
 const setDefaultBoarder = (style: CSSStyleDeclaration) => {
   style.border = 'solid 2px' + COLOR_666
 }
-const setNoUserSelect = (style: CSSStyleDeclaration) => {
-  style.userSelect = 'none'
-}
 const setText = (el: HTMLElement, text: string) => {
   el[INNERHTML] = text
 }
@@ -113,7 +110,6 @@ const createButton = (onclick: () => void) => {
   // ボタンの背景色を切り替える関数
   const setBgColor = (isInvert?: boolean) => (st.background = isInvert ? COLOR_666 : COLOR_FFF)
   setAbsPosition(st, STAGE_WIDTH, 60, 0, STAGE_HEIGHT + 10)
-  setNoUserSelect(st)
   setDefaultBoarder(st)
   st.color = COLOR_666
   st.fontSize = 24 + PX
@@ -133,7 +129,6 @@ const createText = (size = 24, top = 0, align = '') => {
   const el = createElement('div')
   const st = el[STYLE]
   setAbsPosition(st, STAGE_WIDTH, size, 0, top)
-  setNoUserSelect(st)
   st.textAlign = align
   st.fontSize = size + PX
   st.color = COLOR_666
@@ -339,6 +334,7 @@ const endGame = (isOver?: boolean) => {
 // 初期化処理
 const init = () => {
   const bodyStyle = body[STYLE]
+  bodyStyle.userSelect = 'none'
   setDefaultBoarder(bodyStyle)
   // Safariはデフォルトのフォントがセリフ系なのでサンセリフ系にする
   // sans-serifは長いので、標準で使用できて名前の短いarialを採用
