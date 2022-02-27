@@ -15,7 +15,7 @@ const str2pathes = (
           .map((c) => c.charCodeAt(0))
           .map((n) => {
             if (n < 20) {
-              return 'MmLlHhVvCcSsQqTtAaZz'.charAt(n)
+              return 'MmLlHhVvCcSsQqTtAaZz'[n]
             }
             return n - 148 // -20 -128
           })
