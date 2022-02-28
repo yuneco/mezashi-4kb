@@ -324,36 +324,32 @@ const endGame = (isOver?: boolean) => {
   if (isOver) playNotes([523, 466, 440, 392, 349])
 }
 
-// 初期化処理
-const init = () => {
-  const bodyStyle = body[STYLE]
-  bodyStyle.userSelect = 'none'
-  setDefaultBoarder(bodyStyle)
-  // Safariはデフォルトのフォントがセリフ系なのでサンセリフ系にする
-  // sans-serifは長いので、標準で使用できて名前の短いarialを採用
-  bodyStyle.fontFamily = 'arial'
-  bodyStyle.width = STAGE_WIDTH + PX
-  bodyStyle.height = STAGE_HEIGHT + PX
-  bodyStyle.position = 'relative'
-  bodyStyle.touchAction = 'none'
-  // ステージクリックでメザシを発射
-  handleClick(body, addMzs)
-  // 画面下のメインボタンを生成： ゲーム中 → ジャンプ / ゲーム前&ゲームオーバー → ゲーム開始
-  mainButton = createButton(() => (isPlaying ? tamaJump : startGame)())
-  // スコアと残弾数の表示テキストを生成
-  stateText = createText()
-  const stateStyle = stateText[STYLE]
-  // textShadowを使って絵文字をシルエットで表示する
-  stateStyle.color = COLOR_TRANSPARENT
-  stateStyle.textShadow = '0 0 0 ' + COLOR_666
-  // タイトルテキストを生成
-  titleText = createText(36, 310, 'center')
-  // たまさんを生成
-  tama = createChara(tamaSvg, 80, N100)
-}
-
 // アプリを初期化
-init()
+const bodyStyle = body[STYLE]
+bodyStyle.userSelect = 'none'
+setDefaultBoarder(bodyStyle)
+// Safariはデフォルトのフォントがセリフ系なのでサンセリフ系にする
+// sans-serifは長いので、標準で使用できて名前の短いarialを採用
+bodyStyle.fontFamily = 'arial'
+bodyStyle.width = STAGE_WIDTH + PX
+bodyStyle.height = STAGE_HEIGHT + PX
+bodyStyle.position = 'relative'
+bodyStyle.touchAction = 'none'
+// ステージクリックでメザシを発射
+handleClick(body, addMzs)
+// 画面下のメインボタンを生成： ゲーム中 → ジャンプ / ゲーム前&ゲームオーバー → ゲーム開始
+mainButton = createButton(() => (isPlaying ? tamaJump : startGame)())
+// スコアと残弾数の表示テキストを生成
+stateText = createText()
+const stateStyle = stateText[STYLE]
+// textShadowを使って絵文字をシルエットで表示する
+stateStyle.color = COLOR_TRANSPARENT
+stateStyle.textShadow = '0 0 0 ' + COLOR_666
+// タイトルテキストを生成
+titleText = createText(36, 310, 'center')
+// たまさんを生成
+tama = createChara(tamaSvg, 80, N100)
+
 // ゲームをリセット
 endGame()
 // フレームアニメーションを開始
