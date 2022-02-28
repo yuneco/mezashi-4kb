@@ -60,13 +60,13 @@ let titleText: HTMLElement
 /** 前回のｔｉｃｋを実行した時刻(ms) */
 let lastTick = 0
 /** 現在のフレームのdelay: 60FPS=1としたフレームレートの逆数（30FPSなら2） */
-let frameDelay = 1
+let frameDelay = 0
 /** 現在のフレーム番号: delayを含むため、この値は整数にはなりません */
 let frameCount = 0
 /**
  * KEY_FRAME_INTERVALを1単位として、直近のtickのキーフレーム番号
  * tickでキーフレーム単位の処理を行うために使用 */
-let lastKeyFrame = -1
+let lastKeyFrame = 0
 
 // ゲーム状態
 /** ゲームはプレー中か？ */
@@ -255,16 +255,14 @@ const tick = (time: number) => {
   frameCount += frameDelay
 
   // 一定フレーム数ごとに「キーフレーム」を設ける
-  const keyFrameIndex = ~~(frameCount / KEY_FRAME_INTERVAL)
-  const isNewKey = keyFrameIndex !== lastKeyFrame
-  lastKeyFrame = keyFrameIndex
+  const keyFrameIndex = frameCount / KEY_FRAME_INTERVAL | 0
 
   if (isPlaying) {
     // 猫追加判定
     // 時間と共に猫出現率を上げていく
     catAppearRate += CAT_APPEAR_RATE_INCREASE
     // キーフレームのタイミングで乱数が出現率を上回ったら猫を追加
-    if (isNewKey && random() < catAppearRate) {
+    if (keyFrameIndex !== lastKeyFrame && random() < catAppearRate) {
       addCat()
       // 出現率をゼロリセット
       catAppearRate = 0
@@ -296,6 +294,7 @@ const tick = (time: number) => {
   /** スコアと弾数の表示を更新します */
   stateText[INNERHTML] = `🐱${score} / ` + ('🐟'.repeat(bulletLeft) || 'RELOADING')
 
+  lastKeyFrame = keyFrameIndex
   lastTick = time
   requestAnimationFrame(tick)
 }
