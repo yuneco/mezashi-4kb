@@ -326,7 +326,7 @@ const endGame = (isOver?: boolean) => {
 
 // アプリを初期化
 const bodyStyle = body[STYLE]
-bodyStyle.userSelect = 'none'
+
 setDefaultBoarder(bodyStyle)
 // Safariはデフォルトのフォントがセリフ系なのでサンセリフ系にする
 // sans-serifは長いので、標準で使用できて名前の短いarialを採用
@@ -334,7 +334,7 @@ bodyStyle.fontFamily = 'arial'
 bodyStyle.width = STAGE_WIDTH + PX
 bodyStyle.height = STAGE_HEIGHT + PX
 bodyStyle.position = 'relative'
-bodyStyle.touchAction = 'none'
+bodyStyle.userSelect = bodyStyle.touchAction = 'none'
 // ステージクリックでメザシを発射
 handleClick(body, addMzs)
 // 画面下のメインボタンを生成： ゲーム中 → ジャンプ / ゲーム前&ゲームオーバー → ゲーム開始
