@@ -30,7 +30,7 @@ type Chara = {
   /** Y加速度 */
   a: number
   /** X速度 */
-  m?: number
+  m: number
 }
 
 // ゲーム設定
@@ -137,7 +137,7 @@ const createText = (size = 24, top = 0, align = '') => {
 }
 
 /** キャラクターを追加する */
-const createChara = (svg: string, w: number, h: number, x = 0, y = 0): Chara => {
+const createChara = (svg: string, w: number, h: number, m = 0, a = GRAVITY, x = 0, y = 0): Chara => {
   const box = createElement('i')
   const style = box[STYLE]
   setAbsPosition(style, w, h)
@@ -146,8 +146,9 @@ const createChara = (svg: string, w: number, h: number, x = 0, y = 0): Chara => 
     e: appendChild(box),
     x,
     y,
+    m,
     v: 0,
-    a: GRAVITY,
+    a,
     w,
     h
   }
@@ -174,7 +175,7 @@ const updatePos = (chara: Chara) => {
   if (chara.y <= 0) {
     chara.v = chara.y = 0
   }
-  chara.x += (chara.m ?? 0) * frameDelay
+  chara.x += chara.m * frameDelay
   chara.e[STYLE].transform = `translate(${chara.x}px, ${
     STAGE_HEIGHT - chara.y - chara.h
   }px) scaleY(${Math.sin(frameCount / 7) / 20 + 1})`
@@ -190,14 +191,19 @@ const tamaJump = () => {
 /** 猫をステージに追加 */
 const addCat = () => {
   const size = 50
-  const cat = createChara(catSvg, size, size, STAGE_WIDTH - size, random(300))
-  if (random() < CAT_FLY_RATE) {
-    // 空飛ぶ猫（=重力0）
-    cat.a = 0
-  }
-  // スコアに合わせて移動速度を上げていく
-  cat.m = -4 - score * CAT_SPEED_UP
-  cats.push(cat)
+  cats.push(
+    createChara(
+      catSvg,
+      size,
+      size, 
+      // スコアに合わせて移動速度を上げていく
+      -4 - score * CAT_SPEED_UP, 
+      // 空飛ぶ猫（=重力0
+      (random() < CAT_FLY_RATE ? 0 : GRAVITY),
+      STAGE_WIDTH - size,
+      random(300)
+    )
+  )
 }
 /** 猫をジャンプさせる */
 const catJump = (cat: Chara) => {
@@ -210,11 +216,9 @@ const catJump = (cat: Chara) => {
 /** メザシをステージに追加 */
 const addMzs = () => {
   if (isPlaying && bulletLeft) {
-    
-    const mzs = createChara(mzsSvg, 40, 10, 50, tama.y + 40)
-    mzs.m = 5
-    mzs.a = 0
-    mzses.push(mzs)
+    mzses.push(
+      createChara(mzsSvg, 40, 10, 5, 0, 50, tama.y + 40)
+    )
     bulletLeft--
     if (!bulletLeft) {
       timeout(() => {
@@ -234,8 +238,6 @@ const intersected = (c1: Chara, c2: Chara) =>
   c1.x<(c2.x+c2.w) && (c1.x+c1.w)>c2.x &&
   c1.y<(c2.y+c2.h) && (c1.y+c1.h)>c2.y
 
-  
-  
 /** 衝突したキャラを削除 */
 const filteroutHitCharactors = (charas: Chara[], bullets: Chara[]) => {
   let hits: Chara[] = []
@@ -263,7 +265,7 @@ const tick = (time: number) => {
     // 時間と共に猫出現率を上げていく
     catAppearRate += CAT_APPEAR_RATE_INCREASE
     // キーフレームのタイミングで乱数が出現率を上回ったら猫を追加
-    if (keyFrameIndex !== lastKeyFrame && random() < catAppearRate) {
+    if (keyFrameIndex > lastKeyFrame && random() < catAppearRate) {
       addCat()
       // 出現率をゼロリセット
       catAppearRate = 0
