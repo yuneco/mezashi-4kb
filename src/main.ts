@@ -250,7 +250,7 @@ const filteroutHitCharactors = (charas: Chara[], bullets: Chara[]) => {
 /** フレームごとの処理 */
 const tick = (time: number) => {
   // 60FPSを1フレームの基準として、前回から何フレーム分時間が経過しているか
-  frameDelay = time ? (time - lastTick) / 17 : 1
+  frameDelay = (time - lastTick) / 17
   frameCount += frameDelay
 
   // 一定フレーム数ごとに「キーフレーム」を設ける
