@@ -12,13 +12,8 @@ const str2pathes = (
       (line) =>
         `<path d="M${atob(line)
           .split('')
-          .map((c) => c.charCodeAt(0))
-          .map((n) => {
-            if (n < 20) {
-              return 'MmLlHhVvCcSsQqTtAaZz'[n]
-            }
-            return n - 148 // -20 -128
-          })
+          .map((c, n) => (n = c.charCodeAt(0)) < 20 ? 'MmLlHhVvCcSsQqTtAaZz'[n]: n - 148 // -20 -128
+          )
           .join(
             ' '
           )}" ${STROKE}=${strokeColor} ${STROKE}-width=${strokeWidth} fill=${fill} ${STROKE}-linecap=round ${STROKE}-linejoin=round />`
