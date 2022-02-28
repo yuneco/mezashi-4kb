@@ -226,14 +226,13 @@ const addMzs = () => {
 const filteroutStageoutCharactors = (charas: Chara[]) =>
   charas[FILTER]((chara: Chara) => chara.x > 0 && chara.x < STAGE_WIDTH)
 
-/** 2つのレンジが重なるか判定するユーティリティ */
-const isOverwraped = (x1: number, w1: number, x2: number, w2: number) =>
-  Math.abs((x1 - x2) * 2 + w1 - w2) < w1 + w2
-
 /** 2つのキャラの衝突が衝突するか？ */
 const intersected = (c1: Chara, c2: Chara) =>
-  isOverwraped(c1.x, c1.w, c2.x, c2.w) && isOverwraped(c1.y, c1.h, c2.y, c2.h)
+  c1.x<(c2.x+c2.w) && (c1.x+c1.w)>c2.x &&
+  c1.y<(c2.y+c2.h) && (c1.y+c1.h)>c2.y
 
+  
+  
 /** 衝突したキャラを削除 */
 const filteroutHitCharactors = (charas: Chara[], bullets: Chara[]) => {
   let hits: Chara[] = []
