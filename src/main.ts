@@ -208,18 +208,20 @@ const catJump = (cat: Chara) => {
 
 /** メザシをステージに追加 */
 const addMzs = () => {
-  if (!isPlaying || !bulletLeft) return
-  const mzs = createChara(mzsSvg, 40, 10, 50, tama.y + 40)
-  mzs.m = 5
-  mzs.a = 0
-  mzses.push(mzs)
-  bulletLeft--
-  if (!bulletLeft) {
-    timeout(() => {
-      bulletLeft = 6
-    }, 2000)
+  if (isPlaying && bulletLeft) {
+    
+    const mzs = createChara(mzsSvg, 40, 10, 50, tama.y + 40)
+    mzs.m = 5
+    mzs.a = 0
+    mzses.push(mzs)
+    bulletLeft--
+    if (!bulletLeft) {
+      timeout(() => {
+        bulletLeft = 6
+      }, 2000)
+    }
+    playNotes([784])
   }
-  playNotes([784])
 }
 
 /** ステージ外に出たキャラを削除 */
