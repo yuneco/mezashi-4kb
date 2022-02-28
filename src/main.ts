@@ -92,8 +92,9 @@ let tama: Chara
 const setDefaultBoarder = (style: CSSStyleDeclaration) => {
   style.border = 'solid 2px' + COLOR_666
 }
-const setText = (el: HTMLElement, text: string) => {
-  el[INNERHTML] = text
+const setTexts = (title: string, button: string) => {
+  titleText[INNERHTML] = title;
+  mainButton[INNERHTML] = button;
 }
 const setAbsPosition = (style: CSSStyleDeclaration, w: number, h: number, x = 0, y = 0) => {
   style.position = 'absolute'
@@ -309,15 +310,13 @@ const startGame = () => {
   score = 0
   bulletLeft = 6
   isPlaying = true
-  setText(titleText, '')
-  setText(mainButton, 'JUMP')
+  setTexts('', 'JUMP')
 }
 
 /** ゲームを終了してタイトル画面を表示します */
 const endGame = (isOver?: boolean) => {
   isPlaying = false
-  setText(mainButton, 'GO!')
-  setText(titleText, isOver ? 'GAMEOVER' : 'Neko Mezashi 4KB')
+  setTexts(isOver ? 'GAMEOVER' : 'Neko Mezashi 4KB', 'GO!')
   // たまさんをステージ中央に移動
   tama.x = (STAGE_WIDTH - tama.w) / 2
   tama.y = STAGE_HEIGHT / 2
