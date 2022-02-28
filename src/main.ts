@@ -214,19 +214,12 @@ const addMzs = () => {
   mzs.a = 0
   mzses.push(mzs)
   bulletLeft--
-  updateStateText()
   if (!bulletLeft) {
     timeout(() => {
       bulletLeft = 6
-      updateStateText()
     }, 2000)
   }
   playNotes([784])
-}
-
-/** スコアと弾数の表示を更新します */
-const updateStateText = () => {
-  stateText[INNERHTML] = `🐱${score} / ` + ('🐟'.repeat(bulletLeft) || 'RELOADING')
 }
 
 /** ステージ外に出たキャラを削除 */
@@ -291,7 +284,6 @@ const tick = (time: number) => {
     const hitCount = catCount - cats.length
     if (hitCount) {
       score += hitCount
-      updateStateText()
       playNotes([523])
     }
     // ゲームオーバー判定
@@ -299,6 +291,10 @@ const tick = (time: number) => {
     // 除去されたキャラをDOMからも削除
     removeInvalidCharas([tama, ...cats, ...mzses])
   }
+
+  /** スコアと弾数の表示を更新します */
+  stateText[INNERHTML] = `🐱${score} / ` + ('🐟'.repeat(bulletLeft) || 'RELOADING')
+
   lastTick = time
   requestAnimationFrame(tick)
 }
@@ -313,7 +309,6 @@ const startGame = () => {
   score = 0
   bulletLeft = 6
   isPlaying = true
-  updateStateText()
   setText(titleText, '')
   setText(mainButton, 'JUMP')
 }
