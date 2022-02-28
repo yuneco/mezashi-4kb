@@ -12,17 +12,18 @@ gainNode.connect(ctx.destination);
  * @param volume 再生音量
  */
 export const playNotes = ([hz, ...rest]: number[]) => {
-  if (!hz) return
-  const oscillator = ctx.createOscillator();
+  if (hz) {
+    const oscillator = ctx.createOscillator();
 
-  oscillator.connect(gainNode);
-  oscillator.frequency.setValueAtTime(hz, ctx.currentTime);
-  gain.value = 0.3;
-  gain.linearRampToValueAtTime(0, ctx.currentTime + 0.09);
+    oscillator.connect(gainNode);
+    oscillator.frequency.setValueAtTime(hz, ctx.currentTime);
+    gain.value = 0.3;
+    gain.linearRampToValueAtTime(0, ctx.currentTime + 0.09);
 
-  oscillator.start();
-  timeout(() => {
-    oscillator.stop()
-    playNotes(rest) // 残りの音を再生
-  }, N100);
+    oscillator.start();
+    timeout(() => {
+      oscillator.stop()
+      playNotes(rest) // 残りの音を再生
+    }, N100);
+  }
 };
