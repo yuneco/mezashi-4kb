@@ -125,14 +125,16 @@ const createButton = (onclick: () => void) => {
 }
 
 /** テキストを作ってステージに追加する */
-const createText = (size = 24, top = 0, align = '') => {
+const createText = (color: string, size = 24, top = 0, align = '') => {
   // 文字数的にpを使いたいが、pはブラウザデフォルトのマージンがつくためdivにする
   const el = createElement('div')
   const st = el[STYLE]
   setAbsPosition(st, STAGE_WIDTH, size, 0, top)
+  // textShadowを使って絵文字をシルエットで表示する
+  st.textShadow = '0 0 0 ' + COLOR_666
   st.textAlign = align
   st.fontSize = size + PX
-  st.color = COLOR_666
+  st.color = color
   return appendChild(el)
 }
 
@@ -342,13 +344,9 @@ handleClick(body, addMzs)
 // 画面下のメインボタンを生成： ゲーム中 → ジャンプ / ゲーム前&ゲームオーバー → ゲーム開始
 mainButton = createButton(() => (isPlaying ? tamaJump : startGame)())
 // スコアと残弾数の表示テキストを生成
-stateText = createText()
-const stateStyle = stateText[STYLE]
-// textShadowを使って絵文字をシルエットで表示する
-stateStyle.color = COLOR_TRANSPARENT
-stateStyle.textShadow = '0 0 0 ' + COLOR_666
+stateText = createText(COLOR_TRANSPARENT)
 // タイトルテキストを生成
-titleText = createText(36, 310, 'center')
+titleText = createText(COLOR_666, 36, 310, 'center')
 // たまさんを生成
 tama = createChara(tamaSvg, 80, N100)
 
