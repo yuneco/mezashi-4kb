@@ -16,11 +16,11 @@ export const appendChild = (el: HTMLElement) => body.appendChild(el)
 export const random = (max = 1) => Math.random() * max
 export const timeout = setTimeout
 export const handleClick = (el: HTMLElement, func:() => void) => {
-  el.addEventListener('pointerdown', e => {
+  el.onpointerdown = e => {
     e.cancelBubble = true
     //e.preventDefault()
     func()
-  })
+  }
 }
 
 // 利用頻度の高い定数
